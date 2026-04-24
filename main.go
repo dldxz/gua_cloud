@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"wxcloudrun-golang/db"
 	"wxcloudrun-golang/service"
 )
@@ -15,6 +16,11 @@ func main() {
 
 	http.HandleFunc("/", service.IndexHandler)
 	http.HandleFunc("/api/count", service.CounterHandler)
+	http.HandleFunc("/api/hexagrams/explain", service.HexagramExplainHandler)
 
-	log.Fatal(http.ListenAndServe(":80", nil))
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "80"
+	}
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
