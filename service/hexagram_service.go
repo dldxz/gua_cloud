@@ -5,9 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"os"
 	"strings"
 	"sync"
+	confdata "wxcloudrun-golang/conf"
 )
 
 type hexagramEntry struct {
@@ -35,7 +35,7 @@ var (
 
 func loadHexagramData() (map[string]hexagramEntry, error) {
 	hexagramOnce.Do(func() {
-		content, err := os.ReadFile("./conf/zhouyi.json")
+		content, err := confdata.LoadZhouyi()
 		if err != nil {
 			hexagramErr = err
 			return
@@ -74,7 +74,7 @@ func HexagramExplainHandler(w http.ResponseWriter, r *http.Request) {
 	data, err := loadHexagramData()
 	if err != nil {
 		res.Code = -1
-		res.ErrorMsg = "解释数据加载失败"
+		res.ErrorMsg = fmt.Sprintf("解释数据加载失败: %v", err)
 		writeJSON(w, res)
 		return
 	}
